@@ -60,17 +60,25 @@ RCT_EXPORT_METHOD(rotateImage:(NSURLRequest *)imageURL
       
     UIImage *rotatedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
-    // Store image
-    [_bridge.imageStoreManager storeImage:rotatedImage withBlock:^(NSString *rotatedImageTag) {
-      if (!rotatedImageTag) {
-        NSString *errorMessage = @"Error storing rotated image in RCTImageStoreManager";
-        RCTLogWarn(@"%@", errorMessage);
-        errorCallback(RCTErrorWithMessage(errorMessage));
-        return;
+      
+      NSData *imageToEncode = UIImageJPEGRepresentation(rotatedImage, 1);
+      
+      NSString *dir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES) firstObject];
+      NSString *storageFolder = @"RNRectangleScanner";
+      dir = [dir stringByAppendingPathComponent:storageFolder];
+      NSFileManager *fileManager = [NSFileManager defaultManager];
+      NSError *errorCreateDirectory = nil;
+      if(![fileManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:&errorCreateDirectory]){
+          NSLog(@"Failed to create directory \"%@\". Error: %@", dir, errorCreateDirectory);
+          NSString *errorMessage = @"Error storing rotated image in RCTImageStoreManager";
+          RCTLogWarn(@"%@", errorMessage);
+          errorCallback(RCTErrorWithMessage(errorMessage));
+          return;
       }
-      successCallback(@[rotatedImageTag]);
-    }];
+      
+      NSString *rotatedImageStoraged = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
+      [imageToEncode writeToFile:rotatedImageStoraged atomically:YES];
+      successCallback(@[rotatedImageStoraged]);
   }];
 }
 
