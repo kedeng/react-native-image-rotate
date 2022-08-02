@@ -61,7 +61,7 @@ RCT_EXPORT_METHOD(rotateImage:(NSURLRequest *)imageURL
     UIImage *rotatedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
       
-      NSData *imageToEncode = UIImageJPEGRepresentation(rotatedImage, 1);
+      NSData *imageToEncode = UIImagePNGRepresentation(rotatedImage, 1);
       
       NSString *dir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES) firstObject];
       NSString *storageFolder = @"RNRectangleScanner";
@@ -76,7 +76,7 @@ RCT_EXPORT_METHOD(rotateImage:(NSURLRequest *)imageURL
           return;
       }
       
-      NSString *rotatedImageStoraged = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
+      NSString *rotatedImageStoraged = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.png",(int)[NSDate date].timeIntervalSince1970]];
       [imageToEncode writeToFile:rotatedImageStoraged atomically:YES];
       successCallback(@[rotatedImageStoraged]);
   }];
