@@ -317,7 +317,7 @@ public class ImageRotateModule extends ReactContextBaseJavaModule {
         if ("image/webp".equals(mimeType)) {
             return ".webp";
         }
-        return ".png";
+        return ".jpg";
     }
 
     private static Bitmap.CompressFormat getCompressFormatForType(String type) {
@@ -327,7 +327,7 @@ public class ImageRotateModule extends ReactContextBaseJavaModule {
         if ("image/webp".equals(type)) {
             return Bitmap.CompressFormat.WEBP;
         }
-        return Bitmap.CompressFormat.PNG;
+        return Bitmap.CompressFormat.JPEG;
     }
 
     private static void writeCompressedBitmapToFile(Bitmap rotated, String mimeType, File tempFile)
